@@ -1,0 +1,588 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Leave Management System</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+     --bg-color: #1c1c1c;
+     --text-color: #f8f9fa;
+     --container-bg: #2b2b2b;
+     --input-bg: #3b3b3b;
+     --input-border: #3b3b3b;
+     --primary-color: #ff6b6b;
+     --primary-hover: #ff4d4d;
+     --label-color: #a0a0a0;
+ }
+
+ .light-theme {
+     --bg-color: #f8f9fa;
+     --text-color: #000000;
+     --container-bg: #ffffff;
+     --input-bg: #ffffff;
+     --input-border: #ced4da;
+     --primary-color: #ff4d4d;
+     --primary-hover: #ff3333;
+     --label-color: #000000;
+ }
+
+ body {
+     font-family: 'Georgia', serif;
+     background-color: var(--bg-color);
+     color: var(--text-color);
+     font-size: 16px;
+     line-height: 1.6;
+     letter-spacing: 0.5px;
+     transition: background-color 0.3s, color 0.3s;
+ }
+
+
+
+ .light-theme .nav-link,
+ .light-theme h1,
+ .light-theme h5,
+ .light-theme .card-title,
+ .light-theme .card-text,
+ .light-theme .table {
+     color: #000000;
+ }
+
+
+
+ .light-theme .dashboard-card {
+     background-color: #ffffff;
+     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+ }
+
+ .light-theme .table tbody tr:hover td {
+     color: var(--primary-color);
+ }
+
+ /* Modal styles for light theme */
+ .light-theme .modal-content {
+     background-color: #ffffff;
+     color: #000000;
+ }
+
+ .light-theme .modal-header,
+ .light-theme .modal-body,
+ .light-theme .modal-footer {
+     border-color: #dee2e6;
+ }
+
+ .light-theme .form-label,
+ .light-theme .form-control,
+ .light-theme .form-select {
+     color: #000000;
+ }
+
+        .navbar {
+            background-color: var(--navbar-bg);
+        }
+
+        .navbar-brand {
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .nav-link {
+            color: #a0a0a0;
+            transition: color 0.3s;
+        }
+
+       .nav-link:hover {
+            color: #ff6b6b;
+        }
+
+         .dashboard-card {
+             background-color: var(--container-bg);
+             border-radius: 15px;
+             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+             transition: transform 0.3s ease-in-out;
+             padding: 20px;
+         }
+
+         .dashboard-card:hover {
+             transform: translateY(-5px);
+         }
+
+         .btn-primary {
+             background-color: var(--primary-color);
+             border-color: var(--primary-color);
+             font-weight: 600;
+         }
+
+         .btn-primary:hover {
+             background-color: var(--primary-hover);
+             border-color: var(--primary-hover);
+         }
+
+         .table {
+             color: var(--text-color);
+         }
+
+         .table tbody tr:hover td {
+             color: var(--primary-color);
+         }
+
+         .table thead th {
+             font-family: 'Georgia', serif;
+             font-weight: 600;
+             letter-spacing: 1px;
+         }
+
+          .theme-switch {
+             position: relative;
+             display: inline-block;
+             width: 60px;
+             height: 30px;
+             margin-top: 8px;
+             margin-left: 8px;
+
+             margin-right: 20px;
+         }
+
+         .theme-switch input {
+             opacity: 0;
+             width: 0;
+             height: 0;
+         }
+
+         .slider {
+             position: absolute;
+             cursor: pointer;
+             top: 0;
+             left: 0;
+             right: 0;
+             bottom: 0;
+             background-color: #ccc;
+             transition: .4s;
+             border-radius: 30px;
+         }
+
+         .slider:before {
+             position: absolute;
+             content: "";
+             height: 22px;
+             width: 22px;
+             left: 4px;
+             bottom: 4px;
+             background-color: white;
+             transition: .4s;
+             border-radius: 50%;
+         }
+
+         input:checked + .slider {
+             background-color: #2196F3;
+         }
+
+         input:checked + .slider:before {
+             transform: translateX(30px);
+         }
+
+         .slider .icon {
+             position: absolute;
+             top: 50%;
+             transform: translateY(-50%);
+             width: 16px;
+             height: 16px;
+             fill: white;
+         }
+
+         .slider .sun-icon {
+             right: 8px;
+         }
+
+         .slider .moon-icon {
+             left: 8px;
+         }
+
+         input:checked + .slider .sun-icon {
+             opacity: 0;
+         }
+
+         input:checked + .slider .moon-icon {
+             opacity: 1;
+         }
+
+
+
+    </style>
+
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg">
+    <div class="container">
+        <a class="navbar-brand" href="#">Leave Management System</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <label class="theme-switch">
+                        <input type="checkbox" id="themeToggle">
+                        <span class="slider">
+                                <svg class="icon sun-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 18a6 6 0 1 1 0-12 6 6 0 0 1 0 12zm0-2a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM11 1h2v3h-2V1zm0 19h2v3h-2v-3zM3.515 4.929l1.414-1.414L7.05 5.636 5.636 7.05 3.515 4.93zM16.95 18.364l1.414-1.414 2.121 2.121-1.414 1.414-2.121-2.121zm2.121-14.85l1.414 1.415-2.121 2.121-1.414-1.414 2.121-2.121zM5.636 16.95l1.414 1.414-2.121 2.121-1.414-1.414 2.121-2.121zM23 11v2h-3v-2h3zM4 11v2H1v-2h3z"/>
+                                </svg>
+                                <svg class="icon moon-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                    <path d="M12 3a9 9 0 1 0 9 9c0-.46-.04-.92-.1-1.36a5.389 5.389 0 0 1-4.4 2.26 5.403 5.403 0 0 1-3.14-9.8c-.44-.06-.9-.1-1.36-.1z"/>
+                                </svg>
+                            </span>
+                    </label>
+                </li>
+                <li class="nav-item">
+                    <form th:action="@{/logout}" method="post">
+                        <button type="submit" class="btn btn-link nav-link">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<div class="container mt-4">
+    <h1 class="mb-4">Admin Dashboard</h1>
+
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Pending Requests</h5>
+                    <p class="card-text display-4 text-danger" th:text="${pendingCount}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Approved Requests</h5>
+                    <p class="card-text display-4 text-success" th:text="${approvedCount}">0</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card dashboard-card">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Rejected Requests</h5>
+                    <p class="card-text display-4 text-warning" th:text="${rejectedCount}">0</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="requests-tab" data-bs-toggle="tab" data-bs-target="#requests" type="button" role="tab">Leave Requests</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="users-tab" data-bs-toggle="tab" data-bs-target="#users" type="button" role="tab">Users</button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="departments-tab" data-bs-toggle="tab" data-bs-target="#departments" type="button" role="tab">Departments</button>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3" id="myTabContent">
+        <div class="tab-pane fade show active" id="requests" role="tabpanel">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <h5 class="card-title">Pending Leave Requests</h5>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>User</th>
+                                <th>Leave Type</th>
+                                <th>Start Date</th>
+                                <th>End Date</th>
+                                <th>Reason</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="request : ${pendingRequests}">
+                                <td th:text="${request.user.username}"></td>
+                                <td th:text="${request.leaveType}"></td>
+                                <td th:text="${#temporals.format(request.startDate, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${#temporals.format(request.endDate, 'dd-MM-yyyy')}"></td>
+                                <td th:text="${request.reason}"></td>
+                                <td>
+                                    <form th:action="@{/admin/approve/{id}(id=${request.id})}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-success btn-sm">Approve</button>
+                                    </form>
+                                    <form th:action="@{/admin/reject/{id}(id=${request.id})}" method="post" style="display: inline;">
+                                        <button type="submit" class="btn btn-danger btn-sm">Reject</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="users" role="tabpanel">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Users</h5>
+                    <div class="mb-3">
+                        <label for="departmentSelect" class="form-label">Filter by Department:</label>
+                        <select class="form-select" id="departmentSelect" onchange="filterUsers()">
+                            <option value="">All Departments</option>
+                            <option th:each="dept : ${departments}"
+                                    th:value="${dept.name}"
+                                    th:text="${dept.name}">
+                            </option>
+                        </select>
+                    </div>
+                    <p>Total Users: <span id="totalUsers" th:text="${totalUsers}">0</span></p>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Department</th>
+                                <th>Role</th>
+                                <th>Remaining Leave Days</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="userTableBody">
+                            <tr th:each="user : ${users}" th:data-department="${user.department}">
+                                <td th:text="${user.username}"></td>
+                                <td th:text="${user.email}"></td>
+                                <td th:text="${user.department}"></td>
+                                <td th:text="${user.role}"></td>
+                                <td th:text="${remainingLeaveDays.get(user.id)}"></td>
+                                <td>
+                                    <button class="btn btn-primary btn-sm" data-bs-toggle="modal" th:data-bs-target="'#editUser' + ${user.id}">Edit</button>
+                                    <button class="btn btn-success btn-sm" data-bs-toggle="modal" th:data-bs-target="'#addLeave' + ${user.id}">Add Leave</button>
+                                </td>
+                                <td>
+                                    <form th:action="@{/admin/users/{id}/delete(id=${user.id})}" method="post">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="departments" role="tabpanel">
+            <div class="card dashboard-card">
+                <div class="card-body">
+                    <h5 class="card-title">Manage Departments</h5>
+                    <form id="addDepartmentForm" class="mb-3">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="newDepartmentName" name="name" placeholder="New Department Name" required>
+                            <button class="btn btn-primary" type="submit">Add Department</button>
+                        </div>
+                    </form>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                            <tr>
+                                <th>Department Name</th>
+                                <th>Action</th>
+                            </tr>
+                            </thead>
+                            <tbody id="departmentTableBody">
+                            <tr th:each="department : ${departments}">
+                                <td th:text="${department.name}"></td>
+                                <td>
+                                    <button class="btn btn-danger btn-sm delete-department" th:data-id="${department.id}">Delete</button>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:each="user : ${users}" th:id="'editUser' + ${user.id}" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/admin/users/{id}/update(id=${user.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="department" class="form-label">Department</label>
+                                <select class="form-select" id="department" name="department" required>
+                                    <option th:each="dept : ${departments}" th:value="${dept.name}" th:text="${dept.name}" th:selected="${dept.name == user.department}"></option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label">Role</label>
+                                <select class="form-select" id="role" name="role" required>
+                                    <option value="ROLE_USER" th:selected="${user.role == 'ROLE_USER'}">User</option>
+                                    <option value="ROLE_ADMIN" th:selected="${user.role == 'ROLE_ADMIN'}">Admin</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Update</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:each="user : ${users}" th:id="'addLeave' + ${user.id}" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" style="color: black;">Add Extra Leave for <span th:text="${user.username}"></span></h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form th:action="@{/admin/users/{id}/add-leave(id=${user.id})}" method="post">
+                            <div class="mb-3">
+                                <label for="leaveType" class="form-label" style="color: black;">Leave Type</label>
+                                <select class="form-select" id="leaveType" name="leaveType" required>
+                                    <option value="Annual">Annual</option>
+                                    <option value="Sick">Sick Leave</option>
+                                    <option value="Personal">Personal Leave</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <label for="days" class="form-label" style="color: black;">Number of Extra Leave Days</label>
+                                <input type="number" class="form-control" id="days" name="days" required min="1" style="color: black;">
+                            </div>
+                            <button type="submit" class="btn btn-success" style="color: black;">Add Leave Days</button>
+
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+
+    const themeToggle = document.getElementById('themeToggle');
+ const body = document.body;
+
+ // Load saved theme or default to dark
+ const currentTheme = localStorage.getItem('theme') || 'dark';
+ body.classList.toggle('light-theme', currentTheme === 'light');
+ themeToggle.checked = currentTheme === 'light';
+
+ // Theme toggle functionality
+ themeToggle.addEventListener('change', () => {
+     body.classList.toggle('light-theme');
+     const isLight = body.classList.contains('light-theme');
+     localStorage.setItem('theme', isLight ? 'light' : 'dark');
+ });
+ function filterUsers() {
+    const selectedDepartment = document.getElementById('departmentSelect').value;
+    const userRows = document.querySelectorAll('#userTableBody tr');
+    let visibleUsers = 0;
+
+    userRows.forEach(row => {
+        const userDepartment = row.querySelector('td:nth-child(3)').textContent; // Assuming department is in the third column
+        if (selectedDepartment === '' || userDepartment === selectedDepartment) {
+            row.style.display = '';
+            visibleUsers++;
+        } else {
+            row.style.display = 'none';
+        }
+    });
+
+    document.getElementById('totalUsers').textContent = visibleUsers;
+}
+
+ // Modal Fade-In Effect on Load
+document.addEventListener('DOMContentLoaded', function() {
+    const departmentSelect = document.getElementById('departmentSelect');
+    if (departmentSelect) {
+        departmentSelect.addEventListener('change', filterUsers);
+    }
+});
+
+filterUsers();
+
+// Delete Department using event delegation
+document.getElementById('departmentTableBody').addEventListener('click', function(e) {
+ if (e.target && e.target.classList.contains('delete-department')) {
+     e.preventDefault();
+     const departmentId = e.target.getAttribute('data-id');
+     Swal.fire({
+         title: 'Are you sure?',
+         text: 'You will not be able to recover this department!',
+         icon: 'warning',
+         showCancelButton: true,
+         confirmButtonColor: '#3085d6',
+         cancelButtonColor: '#d33',
+         confirmButtonText: 'Yes, delete it!'
+     }).then((result) => {
+         if (result.isConfirmed) {
+             axios.delete(`/admin/departments/${departmentId}/delete`)
+                 .then(function (response) {
+                     if (response.status === 200) {
+                         Swal.fire('Deleted!', 'Department has been deleted.', 'success');
+                         e.target.closest('tr').remove();
+                     } else {
+                         Swal.fire('Error', 'Failed to delete department', 'error');
+                     }
+                 })
+                 .catch(function (error) {
+                     console.error('Error:', error);
+                     Swal.fire('Error', 'Failed to delete department: ' + error.response.data, 'error');
+                 });
+         }
+     });
+ }
+});
+
+// Update the add department function to use the new delete button structure
+document.getElementById('addDepartmentForm').addEventListener('submit', function(e) {
+ e.preventDefault();
+ const departmentName = document.getElementById('newDepartmentName').value;
+ axios.post('/admin/departments/create', null, { params: { name: departmentName } })
+     .then(function (response) {
+         if (response.data && response.data.id) {
+             Swal.fire('Success', 'Department added successfully', 'success');
+             // Update the table with the new department
+             const newRow = `<tr>
+                 <td>${response.data.name}</td>
+                 <td><button class="btn btn-danger btn-sm delete-department" data-id="${response.data.id}">Delete</button></td>
+             </tr>`;
+             document.getElementById('departmentTableBody').insertAdjacentHTML('beforeend', newRow);
+             document.getElementById('newDepartmentName').value = '';
+         } else {
+             Swal.fire('Error', 'Failed to add department', 'error');
+         }
+     })
+     .catch(function (error) {
+         console.error(error);
+         Swal.fire('Error', 'Failed to add department', 'error');
+     });
+});
+</script>

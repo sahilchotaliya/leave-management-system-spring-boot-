@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Error</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="container mt-5">
+    <h2>An error occurred</h2>
+    <p>Status: <span th:text="${status}"></span></p>
+    <p>Error: <span th:text="${error}"></span></p>
+    <a href="/admin/dashboard" class="btn btn-primary">Go to Home</a>
+</div>
+</body>
+</html>

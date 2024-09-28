@@ -1,0 +1,68 @@
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f8f9fa;
+}
+
+.container {
+    flex: 1;
+}
+
+.footer {
+    margin-top: auto;
+}
+
+.card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: 0.3s;
+    border: none;
+    border-radius: 10px;
+}
+
+.card:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+
+.btn-link {
+    text-decoration: none;
+}
+
+.badge {
+    font-size: 0.8em;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.form-control, .form-select {
+    border-radius: 0.25rem;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border-color: #007bff;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    border-color: #0056b3;
+}
+
+.card-title {
+    color: #007bff;
+    font-weight: bold;
+}
+
+.table {
+    font-size: 0.9em;
+}
+
+.table th {
+    font-weight: 600;
+}
+
+.badge {
+    font-weight: 500;
+}
